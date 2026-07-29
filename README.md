@@ -41,3 +41,4 @@ In Supabase Dashboard:
 3. Under **Authentication → URL Configuration**, set the production Site URL and add local/production redirect URLs, including `http://localhost:5175`.
 
 The browser allowlist is in `src/auth/AuthProvider.tsx`; the matching database allowlist is in `supabase/26.07.29-12.53-altio-reimbursement-setup.sql`. Keep them identical.
+
