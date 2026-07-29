@@ -1,0 +1,676 @@
+/* Bundled fonts (no CDN) */
+@import '@fontsource/space-grotesk/500.css';
+@import '@fontsource/space-grotesk/600.css';
+@import '@fontsource/space-grotesk/700.css';
+@import '@fontsource/inter/400.css';
+@import '@fontsource/inter/500.css';
+@import '@fontsource/inter/600.css';
+@import '@fontsource/ibm-plex-mono/400.css';
+@import '@fontsource/ibm-plex-mono/500.css';
+@import './tokens.css';
+
+* { box-sizing: border-box; }
+html, body, #root { height: 100%; margin: 0; }
+body {
+  font-family: var(--font-ui);
+  color: var(--txt);
+  background: var(--canvas);
+  font-size: 13px;
+  -webkit-font-smoothing: antialiased;
+}
+h1, h2, h3, h4 { font-family: var(--font-head); color: var(--ink); margin: 0; font-weight: 600; }
+a { color: var(--accent-deep); text-decoration: none; }
+button { font-family: var(--font-ui); cursor: pointer; }
+
+/* ---------- scrollbars ---------- */
+/* slim, rounded, translucent — blends into the paper surfaces (Firefox) */
+* { scrollbar-width: thin; scrollbar-color: rgba(38, 51, 46, 0.28) transparent; }
+/* WebKit/Chromium: the transparent border + padding-box keeps the thumb slim */
+::-webkit-scrollbar { width: 11px; height: 11px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb {
+  background: rgba(38, 51, 46, 0.22);
+  border-radius: 999px;
+  border: 3px solid transparent;
+  background-clip: padding-box;
+}
+::-webkit-scrollbar-thumb:hover { background: rgba(38, 51, 46, 0.4); background-clip: padding-box; }
+::-webkit-scrollbar-corner { background: transparent; }
+
+/* ---------- hover-expand icon sidebar ---------- */
+/* Collapsed to an icon rail; slides open to icons + labels on hover. */
+.sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  width: var(--rail-w);
+  overflow: hidden;
+  background: var(--ink);
+  color: #CFD8D2;
+  display: flex;
+  flex-direction: column;
+  z-index: 50;
+  transition: width 0.22s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.sidebar:hover { width: var(--sidebar-w); box-shadow: 8px 0 34px rgba(0, 0, 0, 0.32); }
+
+/* Text (labels, section titles, footer) fades in only once the rail is open. */
+.side-label { opacity: 0; white-space: nowrap; transition: opacity 0.16s ease; }
+.sidebar:hover .side-label { opacity: 1; }
+
+.side-brand { display: flex; align-items: center; height: 60px; gap: 10px; flex-shrink: 0; }
+.side-brand-mark { width: var(--rail-w); height: 26px; object-fit: contain; flex-shrink: 0; }
+.side-brand-name { font-family: var(--font-head); font-weight: 700; font-size: 15px; color: #EAF0EC; line-height: 1.1; }
+.side-brand-sub { font-size: 8.5px; letter-spacing: 0.22em; color: rgba(255, 255, 255, 0.5); font-weight: 600; }
+
+.side-section {
+  font-size: 9.5px; letter-spacing: 0.16em; text-transform: uppercase;
+  color: #7C8A83; font-weight: 700; padding: 12px 0 6px var(--rail-w);
+  opacity: 0; transition: opacity 0.16s ease;
+}
+.sidebar:hover .side-section { opacity: 1; }
+
+.side-link {
+  display: flex; align-items: center; height: 40px; margin: 1px 0;
+  color: #B9C4BD; text-decoration: none; position: relative;
+  transition: background 0.12s ease, color 0.12s ease;
+}
+.side-link:hover { background: rgba(255, 255, 255, 0.06); color: #EAF0EC; }
+.side-ico { width: var(--rail-w); flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
+.side-ico svg { width: 18px; height: 18px; }
+.side-link.active { background: var(--ink-2); color: #fff; }
+.side-link.active::before {
+  content: ''; position: absolute; left: 0; top: 7px; bottom: 7px; width: 3px;
+  border-radius: 0 3px 3px 0; background: var(--accent);
+}
+.side-link.active .side-ico { color: var(--accent); }
+
+.side-foot {
+  padding: 12px 0 14px var(--rail-w); font-size: 10.5px; color: #8A968F;
+  border-top: 1px solid rgba(255, 255, 255, 0.06); line-height: 1.5;
+  opacity: 0; transition: opacity 0.16s ease;
+}
+.sidebar:hover .side-foot { opacity: 1; }
+
+/* dark sidebar: light translucent thumb so it blends on --ink instead of clashing */
+.sidebar-nav { scrollbar-color: rgba(255, 255, 255, 0.22) transparent; }
+.sidebar-nav::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.16);
+  border-radius: 999px;
+  border: 3px solid transparent;
+  background-clip: padding-box;
+}
+.sidebar-nav::-webkit-scrollbar-thumb:hover { background: rgba(255, 255, 255, 0.3); background-clip: padding-box; }
+
+/* ---------- shared primitives ---------- */
+.mono { font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
+.num { font-family: var(--font-mono); font-variant-numeric: tabular-nums; text-align: right; }
+
+.btn {
+  border: 1px solid var(--line-strong);
+  background: var(--control);
+  color: var(--txt);
+  padding: 7px 13px;
+  border-radius: var(--radius-sm);
+  font-size: 12.5px;
+  font-weight: 500;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: background 0.12s, border-color 0.12s;
+}
+.btn:hover { border-color: var(--faint); background: #fff; }
+.btn-primary {
+  background: var(--accent);
+  border-color: var(--accent-deep);
+  color: #fff;
+}
+.btn-primary:hover { background: var(--accent-deep); }
+.btn-ghost { background: transparent; border-color: transparent; color: var(--muted); }
+.btn-ghost:hover { background: var(--gray-bg); border-color: transparent; }
+.btn-danger { color: var(--bad); border-color: var(--bad-bg); }
+.btn-danger:hover { background: var(--bad-bg); }
+.btn:disabled { opacity: 0.5; cursor: not-allowed; }
+.btn-sm { padding: 4px 9px; font-size: 12px; }
+
+.input, .select {
+  border: 1px solid var(--line-strong);
+  background: var(--control);
+  color: var(--txt);
+  padding: 7px 9px;
+  border-radius: var(--radius-sm);
+  font-size: 13px;
+  font-family: var(--font-ui);
+  width: 100%;
+}
+.input:focus, .select:focus { outline: 2px solid var(--accent-tint); border-color: var(--accent); }
+.input.mono { font-family: var(--font-mono); }
+
+label.field { display: block; margin-bottom: 12px; }
+label.field > span.lbl {
+  display: block;
+  font-size: 10.5px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 5px;
+  font-weight: 600;
+}
+
+.card {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-card);
+}
+
+/* chips */
+.chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 9px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+.chip-ok { background: var(--ok-bg); color: var(--ok); }
+.chip-warn { background: var(--warn-bg); color: var(--warn); }
+.chip-bad { background: var(--bad-bg); color: var(--bad); }
+.chip-gray { background: var(--gray-bg); color: var(--gray); }
+.chip-plum { background: #EDE4F2; color: var(--plum); }
+
+/* tables */
+table.grid { width: 100%; border-collapse: collapse; font-size: 12.5px; }
+table.grid th {
+  text-align: left;
+  font-size: 10.5px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--muted);
+  font-weight: 600;
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--line);
+  white-space: nowrap;
+}
+table.grid td {
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--line);
+  color: var(--txt);
+}
+table.grid tr:last-child td { border-bottom: none; }
+table.grid tbody tr:hover td { background: rgba(62, 142, 126, 0.04); }
+th.derived, td.derived { background: var(--derived); }
+th.derived { color: var(--accent-deep); }
+.th-num, .td-num { text-align: right; }
+/* Win over `table.grid th { text-align: left }` so numeric headers line up with their numbers. */
+table.grid th.th-num, table.grid td.td-num { text-align: right; }
+
+/* ---------- tabs ---------- */
+.tabbar {
+  display: flex;
+  gap: 4px;
+  border-bottom: 1px solid var(--line);
+  margin-bottom: 18px;
+}
+.tab {
+  border: none;
+  background: transparent;
+  color: var(--muted);
+  padding: 9px 14px;
+  font-size: 13px;
+  font-weight: 500;
+  font-family: var(--font-ui);
+  text-decoration: none;
+  outline: none;
+  -webkit-appearance: none;
+  appearance: none;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+  transition: color 0.18s ease, border-color 0.18s ease;
+}
+.tab:hover { color: var(--txt); }
+.tab:focus, .tab:active { outline: none; text-decoration: none; }
+.tab:focus-visible { color: var(--txt); }
+.tab.active {
+  color: var(--accent-deep);
+  border-bottom-color: var(--accent);
+  font-weight: 600;
+}
+
+/* ---------- table toolbar (date/period filter sits above its table, right-aligned) ---------- */
+.table-toolbar { display: flex; align-items: center; justify-content: flex-start; gap: 8px; flex-wrap: wrap; }
+.table-toolbar .tt-label {
+  font-size: 10.5px; letter-spacing: 0.05em; text-transform: uppercase;
+  color: var(--muted); font-weight: 600;
+}
+
+/* ---------- segmented view toggle (centered pill, e.g. Salary journal / Yearly summary) ---------- */
+.seg { display: inline-flex; gap: 3px; padding: 3px; background: var(--gray-bg); border: 1px solid var(--line-strong); border-radius: 999px; }
+.seg-btn {
+  border: none; background: transparent; color: var(--muted); font-family: var(--font-ui);
+  font-size: 13px; font-weight: 600; padding: 8px 22px; border-radius: 999px;
+  display: inline-flex; align-items: center; gap: 8px; white-space: nowrap;
+  transition: background 0.14s ease, color 0.14s ease, box-shadow 0.14s ease;
+}
+.seg-btn:hover { color: var(--txt); }
+.seg-btn.active {
+  background: var(--card); color: var(--accent-deep);
+  box-shadow: 0 1px 2px rgba(38, 51, 46, 0.14);
+}
+
+/* ---------- spreadsheet grid ---------- */
+.sheet-wrap { overflow-x: auto; border: 1px solid var(--line); border-radius: var(--radius); background: var(--card); }
+table.sheet { width: 100%; border-collapse: collapse; font-size: 12.5px; }
+table.sheet th {
+  text-align: left; font-size: 10px; letter-spacing: 0.04em; text-transform: uppercase;
+  color: var(--muted); font-weight: 700; padding: 8px 8px; white-space: nowrap;
+  border: 1px solid var(--line); background: var(--gray-bg); position: sticky; top: 0; z-index: 1;
+}
+table.sheet th.num { text-align: right; }
+/* overflow:hidden clips read-only cell text when a column is narrowed past its content,
+   so it doesn't spill over the next cell. Inputs are width:100% and .wrap cells wrap, so
+   neither is affected; combo/rate/filter menus are portalled (fixed), so none get clipped. */
+table.sheet td { border: 1px solid var(--line); padding: 0; vertical-align: middle; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+table.sheet td.pad { padding: 6px 9px; }
+table.sheet td.num { padding: 6px 9px; text-align: right; font-family: var(--font-mono); }
+table.sheet td.derived { padding: 6px 9px; text-align: right; font-family: var(--font-mono); background: var(--derived); color: var(--accent-deep); }
+table.sheet tbody tr:hover td { background: rgba(62, 142, 126, 0.03); }
+/* pinned total row (yearly payroll matrix) */
+table.sheet tfoot td {
+  position: sticky; bottom: 0; z-index: 1; border-top: 2px solid var(--line-strong);
+  background: var(--gray-bg); font-size: 13.5px; font-weight: 600;
+}
+/* the .pad cells in the total row get a touch more height so it reads as a summary band */
+table.sheet tfoot td.pad { padding: 9px 9px; }
+table.sheet tfoot td.derived { background: #DCEAD6; }
+.sheet-input, .sheet-select {
+  width: 100%; border: none; background: transparent; padding: 6px 9px;
+  font-size: 12.5px; font-family: var(--font-ui); color: var(--txt); box-sizing: border-box;
+}
+.sheet-input.mono { font-family: var(--font-mono); text-align: right; }
+/* SheetCombo wrap mode — the label wraps in normal flow (grows the row so the full
+   name shows however narrow the column), with the search input layered over it. */
+.combo-wrap { position: relative; display: block; }
+.combo-wrap-text {
+  display: block; padding: 6px 9px; white-space: normal; word-break: break-word;
+  font-size: 12.5px; line-height: 1.35; min-height: 1.35em;
+}
+.combo-wrap-text.ph { color: var(--faint); }
+.combo-wrap-input {
+  position: absolute; inset: 0; height: 100%; color: transparent; caret-color: transparent;
+}
+/* while searching, reveal the input's text and hide the label (kept in flow so the row
+   doesn't collapse) */
+.combo-wrap.open .combo-wrap-text { visibility: hidden; }
+.combo-wrap.open .combo-wrap-input { color: var(--txt); caret-color: var(--accent); background: #fff; }
+/* SheetCombo caret — a ▾ affordance so the cell reads as an editable dropdown, not text */
+.combo-caret-wrap { position: relative; display: block; }
+.combo-caret {
+  position: absolute; right: 7px; top: 50%; transform: translateY(-50%);
+  font-size: 10px; color: var(--faint); pointer-events: none;
+}
+.sheet-input.combo-has-caret { padding-right: 20px; }
+tr:hover .combo-caret { color: var(--muted); }
+/* wrapping text cell (descriptions / details) — auto-grows to 2+ lines */
+textarea.sheet-wraptext {
+  white-space: pre-wrap; word-break: break-word; overflow: hidden; resize: none;
+  line-height: 1.35; text-align: left; display: block;
+}
+textarea.sheet-wraptext.mono { text-align: left; }
+table.sheet td.wrap { white-space: normal; word-break: break-word; }
+.sheet-input:focus, .sheet-select:focus { outline: 2px solid var(--accent); outline-offset: -2px; background: #fff; border-radius: 2px; }
+.sheet-select { cursor: pointer; }
+.sheet-input::placeholder { color: var(--faint); }
+/* searchable dropdown (SheetCombo) — portalled menu, fixed so it isn't clipped */
+.sheet-combo-menu {
+  position: fixed; z-index: 60; max-height: 260px; overflow-y: auto;
+  background: var(--card); border: 1px solid var(--line-strong);
+  border-radius: var(--radius-sm); box-shadow: var(--shadow-pop, 0 8px 24px rgba(20,30,25,0.16));
+  padding: 4px; font-size: 12.5px;
+}
+.sheet-combo-opt { padding: 6px 10px; border-radius: 4px; cursor: pointer; white-space: nowrap; transition: background 0.1s ease; }
+.sheet-combo-opt.active { background: var(--accent-tint); }
+.sheet-combo-opt.picked { font-weight: 600; color: var(--accent-deep); }
+/* highlighted + already-selected reads as the strong sage, not two competing tints */
+.sheet-combo-opt.picked.active { background: color-mix(in srgb, var(--accent) 20%, transparent); }
+.sheet-combo-empty { padding: 8px 10px; color: var(--faint); }
+tr.sheet-addrow td { background: var(--accent-tint); }
+tr.sheet-addrow td.derived { background: #DCEAD6; }
+/* GST / TDS cell — shows the money only; click opens the rate list (RateCell) */
+table.sheet td.rate-cell { padding: 0; background: var(--derived); }
+tr.sheet-addrow td.rate-cell { background: #DCEAD6; }
+.rate-cell-btn {
+  width: 100%; display: flex; align-items: center; justify-content: flex-end; gap: 6px;
+  border: none; background: transparent; padding: 6px 9px; border-radius: 6px;
+  transition: background 0.14s ease, box-shadow 0.14s ease;
+}
+/* caret only on hover/open, so the column stays quiet while you read numbers */
+.rate-cell-btn::after {
+  content: '▾'; font-family: var(--font-ui); font-size: 8px; line-height: 1;
+  color: var(--accent-deep); opacity: 0; transition: opacity 0.12s;
+}
+/* hover: a gentle sage wash instead of a hard white block — blends with the tinted cell */
+.rate-cell-btn:hover { background: color-mix(in srgb, var(--accent) 12%, transparent); }
+.rate-cell-btn:hover::after, .rate-cell-btn.open::after { opacity: 0.6; }
+/* open / focus: a soft raised "pill" — warm card colour, rounded, ring + shadow */
+.rate-cell-btn.open, .rate-cell-btn:focus-visible {
+  outline: none; background: var(--card);
+  box-shadow: 0 0 0 1.5px var(--accent), 0 2px 8px rgba(47,107,94,0.16);
+}
+.rate-cell-val {
+  font-family: var(--font-mono); font-variant-numeric: tabular-nums;
+  font-size: 12.5px; font-weight: 500; color: var(--accent-deep);
+}
+.rate-cell-val.ro { display: block; padding: 6px 9px; text-align: right; }
+.rate-cell-val.zero { color: var(--faint); font-weight: 400; }
+.rate-menu { text-align: right; font-family: var(--font-mono); }
+/* ---------- column header filters (Google-Sheets style) ---------- */
+/* header: label truncates, caret keeps its place at the right edge */
+.th-filter { display: flex; align-items: center; gap: 6px; min-width: 0; padding-right: 5px; }
+.th-filter-label { flex: 1 1 auto; min-width: 0; overflow: hidden; text-overflow: ellipsis; }
+.th-filter-btn {
+  flex: 0 0 auto; display: inline-flex; align-items: center; justify-content: center;
+  width: 20px; height: 20px; padding: 0; border: none; border-radius: 4px;
+  background: transparent; color: var(--muted); opacity: 0.55;
+  transition: opacity 0.12s, background 0.12s, color 0.12s;
+}
+table.sheet th:hover .th-filter-btn { opacity: 0.9; }
+.th-filter-btn:hover { opacity: 1; background: rgba(38, 51, 46, 0.09); color: var(--txt); }
+.th-filter-btn.open { opacity: 1; background: var(--accent-tint); color: var(--accent-deep); }
+/* a filtered column keeps its funnel lit so you can see why rows are missing */
+.th-filter-btn.on { opacity: 1; background: var(--accent-tint); color: var(--accent-deep); }
+.th-filter-btn.on:hover { background: #D8E6D4; }
+
+.colf-menu {
+  position: fixed; z-index: 70; display: flex; flex-direction: column;
+  background: var(--card); border: 1px solid var(--line-strong); border-radius: 8px;
+  box-shadow: 0 10px 28px rgba(20, 30, 25, 0.18); padding: 5px; font-size: 12px;
+  font-family: var(--font-ui); text-transform: none; letter-spacing: 0;
+  font-weight: 400; color: var(--txt);
+}
+.colf-head {
+  display: flex; align-items: baseline; gap: 6px;
+  padding: 4px 7px 6px; font-size: 10px; letter-spacing: 0.06em; text-transform: uppercase;
+  font-weight: 700; color: var(--muted); border-bottom: 1px solid var(--line);
+}
+.colf-title { flex: 1 1 auto; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.colf-count { flex: 0 0 auto; font-weight: 500; letter-spacing: 0; color: var(--faint); text-transform: none; }
+.colf-clear, .colf-foot button {
+  border: none; background: transparent; color: var(--accent-deep);
+  font-size: 11px; font-weight: 600; padding: 2px 5px; border-radius: 4px; white-space: nowrap;
+}
+.colf-clear:hover, .colf-foot button:hover:not(:disabled) { background: var(--accent-tint); }
+.colf-foot button:disabled { color: var(--faint); cursor: default; }
+.colf-search {
+  margin: 6px 3px 1px; padding: 5px 8px; border: 1px solid var(--line-strong);
+  border-radius: 5px; background: var(--control); font-family: var(--font-ui); font-size: 12px;
+}
+.colf-search:focus { outline: 2px solid var(--accent-tint); border-color: var(--accent); }
+.colf-list { max-height: 214px; overflow-y: auto; overflow-x: hidden; margin-top: 4px; }
+.colf-opt {
+  display: flex; align-items: center; gap: 8px; padding: 4px 7px; min-width: 0;
+  border-radius: 4px; cursor: pointer; line-height: 1.35;
+}
+.colf-opt:hover { background: var(--accent-tint); }
+.colf-box {
+  flex: 0 0 auto; width: 13px; height: 13px; border: 1px solid var(--line-strong);
+  border-radius: 3px; background: var(--control); color: #fff; font-size: 9px;
+  display: inline-flex; align-items: center; justify-content: center;
+}
+.colf-box.on { background: var(--accent); border-color: var(--accent-deep); }
+.colf-text { flex: 1 1 auto; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.colf-opt.picked .colf-text { font-weight: 600; color: var(--accent-deep); }
+.colf-text.blank { color: var(--faint); font-style: italic; }
+/* “only” keeps its slot reserved (opacity, not display) so rows never jump on hover */
+.colf-only {
+  flex: 0 0 auto; border: none; background: transparent; color: var(--accent-deep);
+  font-size: 10px; font-weight: 600; letter-spacing: 0.03em; text-transform: uppercase;
+  opacity: 0; padding: 1px 4px; border-radius: 4px;
+}
+.colf-opt:hover .colf-only { opacity: 0.75; }
+.colf-only:hover { opacity: 1 !important; background: var(--card); }
+.colf-empty { padding: 8px 7px; color: var(--faint); }
+.colf-foot {
+  display: flex; justify-content: space-between; gap: 8px;
+  padding-top: 4px; margin-top: 4px; border-top: 1px solid var(--line);
+}
+/* summary strip above the sheet when any column filter is on */
+.filter-bar {
+  display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+  font-size: 11.5px; color: var(--muted); min-height: 26px;
+}
+.filter-tag {
+  display: inline-flex; align-items: center; gap: 6px; background: var(--accent-tint);
+  color: var(--accent-deep); border-radius: 999px; padding: 3px 5px 3px 10px; font-weight: 600;
+}
+.filter-tag button { border: none; background: transparent; color: inherit; font-size: 12px; line-height: 1; padding: 1px 4px; border-radius: 999px; }
+.filter-tag button:hover { background: rgba(47, 107, 94, 0.14); }
+
+/* Excel-style draggable column borders */
+.col-resize-handle {
+  position: absolute; top: 0; right: 0; width: 9px; height: 100%;
+  cursor: col-resize; z-index: 3; touch-action: none;
+}
+.col-resize-handle:hover { box-shadow: inset -2px 0 0 var(--accent); }
+/* while dragging a column border: lock the resize cursor, kill selection + hover flicker */
+body.col-resizing, body.col-resizing * { cursor: col-resize !important; user-select: none !important; }
+body.col-resizing table.sheet tbody tr:hover td { background: inherit; }
+
+/* ---------- record drawer (master-data detail pane) ---------- */
+/* Record detail — a centered modal (not a side drawer), roomy enough for a two-column
+   form so a client/vendor record reads like a proper sheet. */
+.drawer-overlay {
+  position: fixed; inset: 0; z-index: 55; display: flex; align-items: center; justify-content: center;
+  padding: 28px; background: rgba(38, 51, 46, 0.4);
+}
+.drawer {
+  width: min(680px, 100%); max-height: 90vh; display: flex; flex-direction: column;
+  background: var(--card); border: 1px solid var(--line-strong); border-radius: var(--radius);
+  box-shadow: 0 18px 50px rgba(20, 30, 25, 0.28);
+  animation: drawer-in 0.16s ease-out;
+}
+@keyframes drawer-in { from { transform: translateY(12px) scale(0.99); opacity: 0.4; } to { transform: none; opacity: 1; } }
+.drawer-head {
+  display: flex; align-items: flex-start; justify-content: space-between; gap: 12px;
+  padding: 16px 22px; border-bottom: 1px solid var(--line);
+}
+.drawer-title { font-family: var(--font-head); font-size: 17px; color: var(--ink); }
+.drawer-sub { font-size: 11.5px; color: var(--muted); margin-top: 3px; }
+.drawer-body { flex: 1; overflow-y: auto; padding: 4px 22px 20px; }
+.drawer-foot {
+  display: flex; align-items: center; justify-content: space-between; gap: 8px;
+  padding: 12px 22px; border-top: 1px solid var(--line); background: var(--gray-bg);
+  border-radius: 0 0 var(--radius) var(--radius);
+}
+.drawer-section { padding: 16px 0; border-bottom: 1px solid var(--line); }
+.drawer-section:last-child { border-bottom: none; }
+.drawer-section-title {
+  font-size: 10px; letter-spacing: 0.06em; text-transform: uppercase;
+  color: var(--muted); font-weight: 700; margin: 0 0 12px;
+}
+/* Detail = a spreadsheet, same look as the list. One field per row: an uppercase
+   "column header" label cell on the left, an inline-editable value cell on the right. */
+.field-grid {
+  display: flex; flex-direction: column;
+  border: 1px solid var(--line); border-radius: var(--radius-sm); overflow: hidden;
+}
+.field {
+  display: grid; grid-template-columns: 180px minmax(0, 1fr); align-items: stretch;
+  background: var(--card); border-bottom: 1px solid var(--line);
+}
+.field:last-child { border-bottom: none; }
+.field-label {
+  display: flex; align-items: center; padding: 8px 12px;
+  font-size: 10.5px; letter-spacing: 0.04em; text-transform: uppercase;
+  color: var(--muted); font-weight: 700;
+  background: var(--gray-bg); border-right: 1px solid var(--line);
+}
+/* textarea rows: label hugs the top instead of centering against a tall cell */
+.field:has(textarea) .field-label { align-items: flex-start; }
+.field-value { min-width: 0; font-size: 12.5px; display: flex; align-items: stretch; }
+/* the value blends into its cell — no border until you focus it, like the sheet cells */
+.field-input {
+  width: 100%; box-sizing: border-box; border: none; background: transparent;
+  border-radius: 0; padding: 8px 11px; font-size: 12.5px;
+  transition: background 0.12s, box-shadow 0.12s;
+}
+.field-input:hover { background: color-mix(in srgb, var(--accent) 7%, transparent); }
+.field-input:focus {
+  outline: none; background: var(--card); box-shadow: inset 0 0 0 2px var(--accent);
+}
+textarea.field-input { resize: vertical; line-height: 1.4; font-family: var(--font-ui); }
+.field-ro { padding: 8px 11px; color: var(--txt); display: flex; align-items: center; }
+.field-ro.mono { font-family: var(--font-mono); }
+/* trailing action column — empty on data rows, holds Attach / Add on the add-row */
+table.sheet td.td-act { text-align: right; white-space: nowrap; }
+/* name cell that opens the detail panel — fills the cell like a sheet input does */
+.cell-link {
+  display: flex; align-items: center; width: 100%; border: none; background: transparent;
+  padding: 6px 9px; font-size: 12.5px; font-family: var(--font-ui); font-weight: 500;
+  color: var(--accent-deep); text-align: left; border-radius: 2px;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.cell-link > span:first-child { overflow: hidden; text-overflow: ellipsis; }
+.cell-link:hover { background: #fff; text-decoration: underline; }
+.cell-link:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; background: #fff; }
+
+.muted { color: var(--muted); }
+.faint { color: var(--faint); }
+.error-text { color: var(--bad); font-size: 12px; margin-top: 4px; }
+.pill-count {
+  background: var(--bad-bg);
+  color: var(--bad);
+  border-radius: 999px;
+  padding: 3px 10px;
+  font-size: 11.5px;
+  font-weight: 600;
+}
+
+/* ---------- standalone reimbursement shell ---------- */
+.app-topbar {
+  min-height: 58px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  padding: 10px 24px;
+  background: var(--card);
+  border-bottom: 1px solid var(--line);
+}
+.app-topbar-user {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 12px;
+}
+.altio-logo-frame {
+  width: min(190px, 48vw);
+  height: 36px;
+  overflow: hidden;
+  flex: 0 0 auto;
+}
+.altio-logo {
+  display: block;
+  width: 100%;
+  height: auto;
+  transform: translateY(-20.8%);
+  mix-blend-mode: multiply;
+}
+.altio-logo-frame-compact {
+  width: 150px;
+  height: 29px;
+}
+.page-header {
+  position: sticky;
+  top: 0;
+  z-index: 5;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 18px 26px;
+  background: var(--card);
+  border-bottom: 1px solid var(--line);
+}
+.login-page {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  background:
+    radial-gradient(circle at 15% 10%, rgba(62, 142, 126, 0.11), transparent 31rem),
+    var(--canvas);
+}
+.login-panel {
+  width: min(410px, 100%);
+  padding: 36px;
+}
+.login-panel .altio-logo-frame {
+  width: min(275px, 100%);
+  height: 52px;
+  margin-left: -12px;
+}
+.login-panel h1 {
+  margin-top: 10px;
+  font-size: 26px;
+}
+.login-panel > p.muted {
+  margin: 8px 0 24px;
+  line-height: 1.6;
+}
+.login-kicker {
+  margin-top: 28px;
+  color: var(--accent-deep);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+}
+.google-button {
+  width: 100%;
+  justify-content: center;
+  padding: 10px 14px;
+  background: #fff;
+  font-size: 13px;
+}
+.login-error {
+  margin-top: 12px;
+  text-align: center;
+}
+.login-note {
+  margin: 18px 0 0;
+  color: var(--faint);
+  font-size: 11px;
+  text-align: center;
+}
+.no-access-panel {
+  width: min(440px, 100%);
+  padding: 34px;
+  text-align: center;
+}
+.no-access-panel h1 {
+  margin-top: 20px;
+  font-size: 22px;
+}
+.no-access-panel p {
+  margin: 10px 0 20px;
+  line-height: 1.6;
+}
+
+@media (max-width: 700px) {
+  .app-topbar {
+    padding: 10px 14px;
+  }
+  .app-topbar-user .muted {
+    display: none;
+  }
+  .page-header {
+    position: static;
+    align-items: flex-start;
+    padding: 15px 16px;
+  }
+  .login-panel {
+    padding: 28px 24px;
+  }
+}

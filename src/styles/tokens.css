@@ -1,0 +1,40 @@
+/* Altio reimbursement workspace — soft "paper & sage" theme.
+   Matches finance-console-ui-mockups-soft.pdf. Do not invent alternative themes. */
+:root {
+  --ink: #1B2A4A;            /* Refined slate navy matching logo text */
+  --ink-2: #14203B;          /* Darker slate navy for sidebar active states */
+  --canvas: #ECE8DB;         /* Untouched cream paper canvas background */
+  --card: #F9F7EF;           /* Untouched light cream card surface */
+  --control: #FBF9F1;        /* Control background */
+  --line: #DED8C6;           /* Subtle border line */
+  --line-strong: #CCC5B0;    /* Stronger border line */
+  --txt: #2E2C24;            /* Main text color */
+  --muted: #6E695A;          /* Muted text color */
+  --faint: #98937F;          /* Faint text color */
+  --accent: #2B4C7E;         /* Soft slate-blue primary matching logo tone */
+  --accent-deep: #1F3A63;    /* Deep slate-blue hover accent */
+  --accent-tint: #E8EEF5;    /* Soft slate-blue tint matching paper background */
+  --derived: #EDF3E8;        /* Computed column background */
+  --annot: #C4633F;
+  --plum: #7A5E8C;
+  --ok-bg: #DFEDD6;
+  --ok: #3D6B2A;
+  --warn-bg: #F3E7C8;
+  --warn: #8A6212;
+  --bad-bg: #F2DCD4;
+  --bad: #9C4430;
+  --gray-bg: #E6E2D3;
+  --gray: #6A6452;
+
+  --radius: 10px;
+  --radius-sm: 7px;
+  --shadow-card: 0 1px 2px rgba(38, 51, 46, 0.06), 0 8px 24px rgba(38, 51, 46, 0.06);
+
+  --font-head: 'Space Grotesk', system-ui, sans-serif;
+  --font-ui: 'Inter', system-ui, sans-serif;
+  --font-mono: 'IBM Plex Mono', ui-monospace, 'Cascadia Code', monospace;
+
+  --sidebar-w: 232px;
+  --rail-w: 52px; /* collapsed icon-rail width; expands to --sidebar-w on hover */
+}
+
