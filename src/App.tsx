@@ -6,9 +6,10 @@ import { NoAccessPage } from './pages/NoAccessPage';
 import { ReimbursementPage } from './pages/ReimbursementPage';
 import { MyRequestsPage } from './pages/MyRequestsPage';
 import { ApprovalsPage } from './pages/ApprovalsPage';
+import { UsersPage } from './pages/UsersPage';
 import { useAllRequests } from './pages/requests/hooks';
 
-type Tab = 'requests' | 'approvals' | 'accounts';
+type Tab = 'requests' | 'approvals' | 'accounts' | 'users';
 
 export function App() {
   const { session, hasAccess, isAdmin, isAccounts, loading, signOut } = useAuth();
@@ -22,6 +23,7 @@ export function App() {
     ...(isAdmin ? [{ key: 'approvals' as Tab, label: 'Approvals' }] : []),
     { key: 'requests', label: 'My reimbursements' },
     ...(isAccounts ? [{ key: 'accounts' as Tab, label: 'Zoho export' }] : []),
+    ...(isAdmin ? [{ key: 'users' as Tab, label: 'Users' }] : []),
   ];
 
   return <Shell tabs={tabs} email={session.user.email ?? ''} isAdmin={isAdmin} onSignOut={signOut} />;
@@ -73,7 +75,10 @@ function Shell({ tabs, email, isAdmin, onSignOut }: {
         </div>
       </div>
       <main>
-        {tab === 'approvals' ? <ApprovalsPage /> : tab === 'accounts' ? <ReimbursementPage /> : <MyRequestsPage />}
+        {tab === 'approvals' ? <ApprovalsPage />
+          : tab === 'accounts' ? <ReimbursementPage />
+          : tab === 'users' ? <UsersPage />
+          : <MyRequestsPage />}
       </main>
     </div>
   );

@@ -27,7 +27,8 @@ as $$
   select lower(coalesce(auth.jwt() ->> 'email', '')) = any (array[
     'abilash@craftech360.com',
     'abilashs003@gmail.com',
-    'yamuna@craftech360.com'
+    'yamuna@craftech360.com',
+    'abilash@altio.me'
   ]::text[])
 $$;
 

@@ -91,25 +91,40 @@ export function ApprovalsPage() {
                 <thead>
                   <tr>
                     <th>Submitted</th><th>Employee</th><th>Expense date</th><th>Category</th><th>Reason</th>
-                    <th className="th-num">Amount</th><th>Bills</th><th>Status</th>
+                    <th className="th-num">Amount</th><th>Bills</th><th>Status</th><th></th>
                   </tr>
                 </thead>
                 <tbody>
-                  {shown.map((r) => (
-                    <tr key={r.id} style={{ cursor: 'pointer' }} onClick={() => setOpenId(r.id)}>
-                      <td className="faint">{fmtDate(r.created_at)}</td>
-                      <td>
-                        <div style={{ fontWeight: 500 }}>{r.user_name || r.user_email.split('@')[0]}</div>
-                        <div className="faint" style={{ fontSize: 11 }}>{r.user_email}</div>
-                      </td>
-                      <td>{fmtDate(r.expense_date)}</td>
-                      <td>{r.category || '—'}</td>
-                      <td style={{ maxWidth: 300, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }} title={r.reason}>{r.reason}</td>
-                      <td className="td-num mono">{inr(r.amount)}</td>
-                      <td className="faint">{r.bill_paths.length}</td>
-                      <td><StatusChip status={r.status} /></td>
-                    </tr>
-                  ))}
+                  {shown.map((r) => {
+                    const own = r.user_id === session?.user.id;
+                    return (
+                      <tr key={r.id} style={{ cursor: 'pointer' }} onClick={() => setOpenId(r.id)}>
+                        <td className="faint">{fmtDate(r.created_at)}</td>
+                        <td>
+                          <div style={{ fontWeight: 500 }}>{r.user_name || r.user_email.split('@')[0]}</div>
+                          <div className="faint" style={{ fontSize: 11 }}>{r.user_email}</div>
+                        </td>
+                        <td>{fmtDate(r.expense_date)}</td>
+                        <td>{r.category || '—'}</td>
+                        <td style={{ maxWidth: 300, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }} title={r.reason}>{r.reason}</td>
+                        <td className="td-num mono">{inr(r.amount)}</td>
+                        <td className="faint">{r.bill_paths.length}</td>
+                        <td><StatusChip status={r.status} /></td>
+                        <td style={{ textAlign: 'right', whiteSpace: 'nowrap' }}>
+                          {own ? (
+                            <span className="chip chip-gray" title="Admins can’t approve their own requests">Yours · another admin decides</span>
+                          ) : (
+                            <button
+                              className={`btn btn-sm${r.status === 'pending' ? ' btn-primary' : ''}`}
+                              onClick={(e) => { e.stopPropagation(); setOpenId(r.id); }}
+                            >
+                              {r.status === 'pending' ? 'Review →' : 'View'}
+                            </button>
+                          )}
+                        </td>
+                      </tr>
+                    );
+                  })}
                 </tbody>
               </table>
             </div>

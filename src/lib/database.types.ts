@@ -32,6 +32,17 @@ export interface Database {
           seq: number;
         };
       };
+      altio_reimbursement_members: {
+        Row: {
+          email: string;
+          name: string;
+          role: 'employee' | 'admin';
+          zoho_access: boolean;
+          added_by: string | null;
+          added_at: string;
+          updated_at: string;
+        };
+      };
       altio_reimbursement_requests: {
         Row: {
           id: string;
