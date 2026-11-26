@@ -2,7 +2,7 @@
 
 A completely standalone reimbursement workspace. It includes:
 
-- Google sign-in with a fixed six-email allowlist
+- Google sign-in with a fixed seven-email allowlist
 - quick CSV import, editable reference/journal/project/purpose fields, and Zoho Books CSV export
 - direct PDF export
 - saved export history with re-download, edit, overwrite, and delete

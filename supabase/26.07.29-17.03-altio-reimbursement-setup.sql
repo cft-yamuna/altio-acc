@@ -32,7 +32,8 @@ as $$
     'ravi@craftech360.com',
     'pattar@craftech360.com',
     'accounts@craftech360.com',
-    'abilashs003@gmail.com'
+    'abilashs003@gmail.com',
+    'yamuna@craftech360.com'
   ]::text[])
 $$;
 

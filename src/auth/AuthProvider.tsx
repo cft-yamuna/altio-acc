@@ -9,6 +9,7 @@ export const REIMBURSEMENT_EMAILS = [
   'pattar@craftech360.com',
   'accounts@craftech360.com',
   'abilashs003@gmail.com',
+  'yamuna@craftech360.com',
 ] as const;
 
 interface AuthState {
