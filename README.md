@@ -2,7 +2,8 @@
 
 A completely standalone reimbursement workspace. It includes:
 
-- Google sign-in with a fixed seven-email allowlist
+- Google sign-in for @craftech360.com accounts, with three roles (below)
+- employee reimbursement requests with bill uploads, and admin approve / reject
 - quick CSV import, editable reference/journal/project/purpose fields, and Zoho Books CSV export
 - direct PDF export
 - saved export history with re-download, edit, overwrite, and delete
@@ -40,5 +41,22 @@ In Supabase Dashboard:
 2. Use a Google OAuth client dedicated to this Altio application and add the Supabase callback URL shown on the provider screen to its authorized redirect URIs.
 3. Under **Authentication → URL Configuration**, set the production Site URL and add local/production redirect URLs, including `http://localhost:5175`.
 
-The browser allowlist is in `src/auth/AuthProvider.tsx`; the matching database allowlist is in `supabase/26.07.29-12.53-altio-reimbursement-setup.sql`. Keep them identical.
+## Roles
+
+| Role | Who | Can |
+|---|---|---|
+| Employee | any `@craftech360.com` Google account | submit requests with bills and a reason, see their own requests, withdraw while pending |
+| Admin | `ADMIN_EMAILS` | see every request and its bills, approve, or reject with a reason; never their own request |
+| Accounts | `REIMBURSEMENT_EMAILS` | the Zoho export workspace (quick export + monthly collection) |
+
+The lists live in `src/auth/AuthProvider.tsx` and are enforced again in the database:
+
+- accounts list: `altio_reimbursement_is_allowed()` in `supabase/26.07.29-17.03-altio-reimbursement-setup.sql`
+- admin list: `altio_reimbursement_is_admin()` in `supabase/26.11.26-17.30-altio-reimbursement-requests.sql`
+
+Keep each pair identical. After changing a list, re-run that function's SQL in Supabase.
+
+## Employee requests setup
+
+Run `supabase/26.11.26-17.30-altio-reimbursement-requests.sql` in the SQL Editor of the same Supabase project, after the setup SQL. It adds the `altio_reimbursement_requests` table, its security rules, and storage rules for bills under `altio-reimbursement-docs/requests/<user id>/`.
 

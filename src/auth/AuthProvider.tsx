@@ -2,6 +2,8 @@ import { createContext, useCallback, useContext, useEffect, useMemo, useState, t
 import type { Session } from '@supabase/supabase-js';
 import { supabase } from '../lib/supabase';
 
+// Accounts team: the Zoho export workspace. Keep identical to
+// altio_reimbursement_is_allowed() in the setup SQL.
 export const REIMBURSEMENT_EMAILS = [
   'abilash@craftech360.com',
   'pradeep@craftech360.com',
@@ -12,10 +14,25 @@ export const REIMBURSEMENT_EMAILS = [
   'yamuna@craftech360.com',
 ] as const;
 
+// Admins: approve or reject employee requests. Keep identical to
+// altio_reimbursement_is_admin() in the requests SQL.
+export const ADMIN_EMAILS = [
+  'abilash@craftech360.com',
+  'abilashs003@gmail.com',
+  'yamuna@craftech360.com',
+] as const;
+
+// Anyone signed in with a company account can submit requests.
+export const REQUEST_DOMAIN = '@craftech360.com';
+
 interface AuthState {
   session: Session | null;
+  /** may use the app at all (can submit requests) */
   hasAccess: boolean;
+  /** accounts team — the Zoho export workspace */
   canWrite: boolean;
+  isAccounts: boolean;
+  isAdmin: boolean;
   loading: boolean;
   signOut: () => Promise<void>;
 }
@@ -48,10 +65,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const email = session?.user.email?.trim().toLowerCase() ?? '';
-  const hasAccess = (REIMBURSEMENT_EMAILS as readonly string[]).includes(email);
+  const isAccounts = (REIMBURSEMENT_EMAILS as readonly string[]).includes(email);
+  const isAdmin = (ADMIN_EMAILS as readonly string[]).includes(email);
+  const hasAccess = email.endsWith(REQUEST_DOMAIN) || isAccounts || isAdmin;
   const value = useMemo(
-    () => ({ session, hasAccess, canWrite: hasAccess, loading, signOut }),
-    [session, hasAccess, loading, signOut],
+    () => ({ session, hasAccess, canWrite: isAccounts, isAccounts, isAdmin, loading, signOut }),
+    [session, hasAccess, isAccounts, isAdmin, loading, signOut],
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

@@ -32,6 +32,25 @@ export interface Database {
           seq: number;
         };
       };
+      altio_reimbursement_requests: {
+        Row: {
+          id: string;
+          created_at: string;
+          user_id: string;
+          user_email: string;
+          user_name: string;
+          expense_date: string;
+          category: string;
+          amount: number;
+          reason: string;
+          project: string;
+          bill_paths: string[];
+          status: 'pending' | 'approved' | 'rejected';
+          review_note: string;
+          reviewed_by: string | null;
+          reviewed_at: string | null;
+        };
+      };
     };
   };
 }
