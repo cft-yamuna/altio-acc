@@ -48,7 +48,7 @@ Admins manage who can sign in on the **Users** tab: add any email address, pick 
 | Role | Can |
 |---|---|
 | Employee | submit requests with bills and a reason, see only their own requests, withdraw while pending |
-| Admin | everything an employee can, plus see every request and its bills, approve or reject (never their own), and manage users |
+| Admin | everything an employee can, plus see every request and its bills, approve or reject (their own included), and manage users |
 | + Zoho export access | the Zoho export workspace (quick export + monthly collection), for either role |
 
 Any `@craftech360.com` Google account can sign in as an employee without being added. Admins can't remove or demote themselves, so there is always at least one admin.

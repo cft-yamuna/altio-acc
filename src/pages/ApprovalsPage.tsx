@@ -111,16 +111,13 @@ export function ApprovalsPage() {
                         <td className="faint">{r.bill_paths.length}</td>
                         <td><StatusChip status={r.status} /></td>
                         <td style={{ textAlign: 'right', whiteSpace: 'nowrap' }}>
-                          {own ? (
-                            <span className="chip chip-gray" title="Admins can’t approve their own requests">Yours · another admin decides</span>
-                          ) : (
-                            <button
-                              className={`btn btn-sm${r.status === 'pending' ? ' btn-primary' : ''}`}
-                              onClick={(e) => { e.stopPropagation(); setOpenId(r.id); }}
-                            >
-                              {r.status === 'pending' ? 'Review →' : 'View'}
-                            </button>
-                          )}
+                          {own && <span className="chip chip-gray" style={{ marginRight: 8 }}>Yours</span>}
+                          <button
+                            className={`btn btn-sm${r.status === 'pending' ? ' btn-primary' : ''}`}
+                            onClick={(e) => { e.stopPropagation(); setOpenId(r.id); }}
+                          >
+                            {r.status === 'pending' ? 'Review →' : 'View'}
+                          </button>
                         </td>
                       </tr>
                     );
@@ -132,7 +129,7 @@ export function ApprovalsPage() {
         </div>
       </div>
 
-      {open && session && <RequestDrawer request={open} mode="admin" currentUserId={session.user.id} onClose={() => setOpenId(null)} />}
+      {open && <RequestDrawer request={open} mode="admin" onClose={() => setOpenId(null)} />}
     </>
   );
 }

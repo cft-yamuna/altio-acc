@@ -181,13 +181,13 @@ for insert
 to authenticated
 with check (public.altio_reimbursement_can_request() and user_id = auth.uid());
 
--- Admins decide on other people's requests — never their own.
+-- Admins decide on any request, including their own.
 create policy altio_reimbursement_requests_review
 on public.altio_reimbursement_requests
 for update
 to authenticated
-using (public.altio_reimbursement_is_admin() and user_id <> auth.uid())
-with check (public.altio_reimbursement_is_admin() and user_id <> auth.uid());
+using (public.altio_reimbursement_is_admin())
+with check (public.altio_reimbursement_is_admin());
 
 -- A requester can withdraw their own request until it has been decided.
 create policy altio_reimbursement_requests_withdraw

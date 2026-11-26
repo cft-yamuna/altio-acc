@@ -26,14 +26,13 @@ export function fmtStamp(iso: string | null): string {
 /**
  * One request in full. `mode` decides the actions in the footer:
  *  - 'owner': the requester — can withdraw while pending
- *  - 'admin': approve / reject (not on their own request)
+ *  - 'admin': approve / reject (any request, their own included)
  */
 export function RequestDrawer({
-  request, mode, currentUserId, onClose,
+  request, mode, onClose,
 }: {
   request: ReimbRequest;
   mode: 'owner' | 'admin';
-  currentUserId: string;
   onClose: () => void;
 }) {
   const confirm = useConfirm();
@@ -42,7 +41,6 @@ export function RequestDrawer({
   const [note, setNote] = useState(request.review_note);
   const [err, setErr] = useState<string | null>(null);
   const busy = review.isPending || withdraw.isPending;
-  const own = request.user_id === currentUserId;
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => e.key === 'Escape' && !busy && onClose();
@@ -132,7 +130,7 @@ export function RequestDrawer({
                   {STATUS[request.status].label} by {request.reviewed_by ?? '—'} on {fmtStamp(request.reviewed_at)}
                 </p>
               )}
-              {mode === 'admin' && !own ? (
+              {mode === 'admin' ? (
                 <label className="form-field" style={{ marginBottom: 0 }}>
                   <span className="form-label">Note to employee {request.status === 'pending' ? '(required to reject)' : ''}</span>
                   <textarea
@@ -149,11 +147,6 @@ export function RequestDrawer({
               ) : request.status !== 'pending' ? (
                 <p className="faint" style={{ margin: 0, fontSize: 12 }}>No note added.</p>
               ) : null}
-              {mode === 'admin' && own && (
-                <p className="muted" style={{ margin: 0, fontSize: 12.5 }}>
-                  This is your own request — another admin needs to approve or reject it.
-                </p>
-              )}
             </div>
           )}
 
@@ -168,7 +161,7 @@ export function RequestDrawer({
                 {withdraw.isPending ? 'Withdrawing…' : 'Withdraw'}
               </button>
             )}
-            {mode === 'admin' && !own && (
+            {mode === 'admin' && (
               request.status === 'pending' ? (
                 <>
                   <button className="btn btn-danger" onClick={() => decide('rejected')} disabled={busy}>Reject</button>

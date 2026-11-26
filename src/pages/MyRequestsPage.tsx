@@ -84,7 +84,7 @@ export function MyRequestsPage() {
       </div>
 
       {creating && <NewRequestModal onClose={() => setCreating(false)} />}
-      {open && userId && <RequestDrawer request={open} mode="owner" currentUserId={userId} onClose={() => setOpenId(null)} />}
+      {open && <RequestDrawer request={open} mode="owner" onClose={() => setOpenId(null)} />}
     </>
   );
 }

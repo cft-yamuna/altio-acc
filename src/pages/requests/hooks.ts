@@ -141,7 +141,7 @@ export function useReviewRequest() {
         .eq('id', id)
         .select('id');
       if (error) throw error;
-      if (!data?.length) throw new Error('You can’t review this request (you can’t approve your own).');
+      if (!data?.length) throw new Error('This request couldn’t be updated — only admins can approve or reject.');
     },
     onSuccess: () => qc.invalidateQueries({ queryKey: ['reimb-requests'] }),
   });
