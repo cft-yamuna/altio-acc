@@ -9,8 +9,8 @@
 --   3. re-points the three access functions at the table
 --   4. lets people read their own row, and admins manage everyone else's
 --
--- IMPORTANT: the two earlier files define the same access functions with fixed email
--- lists. If you ever re-run either of them, re-run this file afterwards.
+-- IMPORTANT: 26.07.29-17.03-altio-reimbursement-setup.sql redefines is_allowed() with a fixed
+-- email list. If you ever re-run it, re-run this file afterwards.
 -- Safe to run multiple times.
 
 begin;
@@ -42,7 +42,7 @@ insert into public.altio_reimbursement_members (email, role, zoho_access, added_
   ('ravi@craftech360.com',     'employee', true,  'initial setup'),
   ('pattar@craftech360.com',   'employee', true,  'initial setup'),
   ('accounts@craftech360.com', 'employee', true,  'initial setup'),
-  ('ga@altio.me',                   'employee', false, 'initial setup'),
+  ('gs@altio.me',                   'employee', false, 'initial setup'),
   ('dilandevaiah30@gmail.com',      'employee', false, 'initial setup'),
   ('prasanjeetpanda06@gmail.com',   'employee', false, 'initial setup'),
   ('kanishka.tulya1367@gmail.com',  'employee', false, 'initial setup'),
@@ -50,6 +50,9 @@ insert into public.altio_reimbursement_members (email, role, zoho_access, added_
   ('rahul@craftech360.com',         'employee', false, 'initial setup'),
   ('chetan@craftech360.com',        'employee', false, 'initial setup')
 on conflict (email) do nothing;
+
+-- Correction: ga@altio.me was a typo for gs@altio.me.
+delete from public.altio_reimbursement_members where email = 'ga@altio.me';
 
 ---------------------------------------------------------------------
 -- 3. Access functions, now read from the table

@@ -57,5 +57,5 @@ Any `@craftech360.com` Google account can sign in as an employee without being a
 
 Run `supabase/26.11.26-17.30-altio-reimbursement-requests.sql` in the SQL Editor of the same Supabase project, after the setup SQL. It adds the `altio_reimbursement_requests` table, its security rules, and storage rules for bills under `altio-reimbursement-docs/requests/<user id>/`.
 
-Then run `supabase/26.11.26-18.30-altio-reimbursement-members.sql`. It creates the users table, pre-fills it with the starting users, and switches all access checks over to it. The two earlier files contain older fixed email lists, so if you ever re-run either of them, run the members file again afterwards.
+Then run `supabase/26.11.26-18.30-altio-reimbursement-members.sql`. It creates the users table, pre-fills it with the starting users, and switches all access checks over to it. The original setup file contains an older fixed email list, so if you ever re-run it, run the members file again afterwards. (Re-running the requests file is now safe.)
 

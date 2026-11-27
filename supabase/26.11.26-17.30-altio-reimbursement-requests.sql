@@ -3,52 +3,52 @@
 -- project the app's VITE_SUPABASE_URL points at.
 --
 -- What this creates:
---   1. altio_reimbursement_is_admin()      — who can approve / reject (email list)
---   2. altio_reimbursement_can_request()   — who can submit requests (@craftech360.com + both lists)
+--   1. altio_reimbursement_is_admin()      — placeholder, only if missing (members SQL defines it)
+--   2. altio_reimbursement_can_request()   — placeholder, only if missing (members SQL defines it)
 --   3. altio_reimbursement_requests table   — one row per request, with bill file paths
 --   4. triggers that stamp the requester, lock submitted fields and record the reviewer
 --   5. RLS: users see only their own requests; admins see all and decide on others' requests
 --   6. storage policies for bills under altio-reimbursement-docs/requests/<user id>/
 --
--- Keep the admin list identical to ADMIN_EMAILS in src/auth/AuthProvider.tsx.
--- Safe to run multiple times.
+-- On a fresh database, run 26.11.26-18.30-altio-reimbursement-members.sql afterwards.
+-- Safe to run multiple times — it never touches the access functions once they exist.
 
 begin;
 
 ---------------------------------------------------------------------
--- 1. Admins (approve / reject)
+-- 1–2. Access functions — first-time setup only
+--   Placeholder versions so the policies below can be created on a fresh database.
+--   26.11.26-18.30-altio-reimbursement-members.sql replaces them with versions that read
+--   the members table. They are created ONLY if missing, so re-running this file never
+--   overwrites the table-based versions (doing so used to lock out every non-company
+--   employee without Zoho access: "You don't have permission to do that").
 ---------------------------------------------------------------------
-create or replace function public.altio_reimbursement_is_admin()
-returns boolean
-language sql
-stable
-set search_path = public
-as $$
-  select lower(coalesce(auth.jwt() ->> 'email', '')) = any (array[
-    'abilash@craftech360.com',
-    'abilashs003@gmail.com',
-    'yamuna@craftech360.com',
-    'abilash@altio.me'
-  ]::text[])
-$$;
+do $do$
+begin
+  if to_regprocedure('public.altio_reimbursement_is_admin()') is null then
+    create function public.altio_reimbursement_is_admin()
+    returns boolean
+    language sql
+    stable
+    set search_path = public
+    as $$ select false $$;
+  end if;
+
+  if to_regprocedure('public.altio_reimbursement_can_request()') is null then
+    create function public.altio_reimbursement_can_request()
+    returns boolean
+    language sql
+    stable
+    set search_path = public
+    as $$
+      select lower(coalesce(auth.jwt() ->> 'email', '')) like '%@craftech360.com'
+    $$;
+  end if;
+end
+$do$;
 
 revoke all on function public.altio_reimbursement_is_admin() from public;
 grant execute on function public.altio_reimbursement_is_admin() to authenticated;
-
----------------------------------------------------------------------
--- 2. Requesters (any company account, plus everyone on the existing lists)
----------------------------------------------------------------------
-create or replace function public.altio_reimbursement_can_request()
-returns boolean
-language sql
-stable
-set search_path = public
-as $$
-  select lower(coalesce(auth.jwt() ->> 'email', '')) like '%@craftech360.com'
-      or public.altio_reimbursement_is_allowed()
-      or public.altio_reimbursement_is_admin()
-$$;
-
 revoke all on function public.altio_reimbursement_can_request() from public;
 grant execute on function public.altio_reimbursement_can_request() to authenticated;
 
